@@ -1,55 +1,82 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <style>
-        body{
+<head>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background: url("/static/RegP.png") center / cover no-repeat;
+
             display: flex;
-            justify-content: center;    
-            align-items: center;     
-            height: 100vh;           
-            margin: 0;  
-            background-image: url('jm.png'); 
-            background-size: cover;                  
-            background-position: center;            
-            background-repeat: no-repeat;           
-            background-attachment: fixed;  
+            justify-content: center;
+            align-items: center;
         }
-        .Reg{
-            border:2px solid gray;
-            width:375px;
-            height:200px;
-            padding:15px;
-            border-radius:18px;
-            font-size:20;
-            text-align:center;
-            color:white;
-            background-color:rgb(67, 9, 116);
+        .Reg {
+            width: 450px;
+            padding: 20px;
+            border-radius: 18px;
+            font-size: 25px;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            background-color: transparent;
+            margin-top:250px;
         }
-        .submit{
-            background-color:rgb(38, 16, 202);
-            color:white;
-            height:36px;
-            width:74px;
-            border:none;
-            border-radius:18px;
-            font-weight:bold;
-            font-size:15;
-            cursor:pointer;
-            transition: box-shadow 0.15s;
-            color: 0.15s;
+        .submit {
+            background-color: rgb(73, 70, 99);
+            color: white;
+            height: 45px;
+            width: 250px;
+            border: none;
+            border-radius: 18px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
         }
-        </style>
-    </head>
-    <body style="background-color: lightgrey;">
-        <div class="Reg">
-            <form action="home.html">
-                <label for="fname">Full name:</label><br>
-                <input type="text" id="fname" name="fname" placeholder="Enter Name" required ><br>
-                <label for="regno">Registration no:</label><br>
-                <input type="text" id="regno" name="regno" placeholder="Enter Name" required><br>
-                <label for="password">Password:</label><br>
-                <input type="text" id="password" name="password" placeholder="Enter Name" required><br><br>
-                <button type="submit" class="Submit">Submit</button>
-            </form>
-        </div>
-    </body>
+        .usr {
+            font-size: 30px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="Reg">
+        <form action="/register" method="POST">
+            <label class="usr"
+                   style="display:block; text-align:center;">
+                USER REGISTRATION
+            </label>
+            <br>
+            <label for="fname">Full name:</label>
+            <input
+                type="text"
+                id="fname"
+                name="fname"
+                placeholder="Enter Name"
+                required>
+            <br>
+            <label for="regno">Registration no:</label>
+            <input
+                type="text"
+                id="regno"
+                name="regno"
+                placeholder="Enter Registration no"
+                required>
+            <br>
+            <label for="password">Password:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter Password"
+                required>
+            <br><br>
+            <div style="text-align:center;">
+                <button type="submit" class="submit">
+                    Register
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
 </html>
