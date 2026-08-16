@@ -53,6 +53,7 @@
     position: absolute;
     right: 30px;
     top:30px;
+    cursor:pointer;
 }
 .main-content{
     display:flex;
@@ -69,7 +70,6 @@
   transition: 0.3s ease; 
   padding-top: 60px;
 }
-
 .sidepanel a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
@@ -79,7 +79,6 @@
   display: block;
   transition: 0.3s;
 }
-
 .sidepanel a:hover {
   color: #f1f1f1;
 }
@@ -102,9 +101,62 @@
     height:50px;
     width:50px;
 }
+.user-area {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.home-dp {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid white;
+}
+.logout-btn {
+    background-color: white;
+    color: black;
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.logout-btn:hover {
+    background-color: #ddd;
+}
+.user-name {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
   </style></head>
   <body>
     <h1 class="title">Just Meet</h1>
+<div class="user-area">
+    {% if session.get('regno') %}
+        <img
+            src="{{ url_for('static', filename='profile_pictures/' + session['regno'] + '.png') }}"
+            class="home-dp"
+            onclick="location.href='/profile'"
+            alt="Profile">
+        <div class="user-name">
+            {{ user.username }}
+        </div>
+        <button class="logout-btn" onclick="location.href='/logout'">
+            Logout
+        </button>
+    {% else %}
+        <button class="logout-btn" onclick="location.href='/login'">
+            Login
+        </button>
+    {% endif %}
+</div>
   <div id="mySidepanel" class="sidepanel">
   <button class="closebtn" onclick="closeNav()">&times;</button>
   <a href="/">Home</a>
@@ -115,15 +167,11 @@
   <a href="#">Contact</a>
   </div>
 <div class="main-content">
-  <button class="openbtn" onclick="openNav()">&#9776; </button>
-  
+  <button class="openbtn" onclick="openNav()">&#9776; </button> 
   <div class="tt" onclick="location.href='/timetable'">
     <p style="font-size:30px; font-weight:bold;">Time Table</p>
     <p id="day-of-week"></p>
     <p id="clock-time"></p>
-  </div>
-  <div class="login" onclick="location.href='/login'">
-    <p style="font-size:20px; font-weight:bold;">Login</p>
   </div>
 </div>
 <script>
