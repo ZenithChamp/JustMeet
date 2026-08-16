@@ -78,6 +78,33 @@
     border: none;
     z-index: 999;
 }
+.dp{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 20px auto;
+    cursor: pointer;
+}
+.camera-box {
+    display: none;
+    margin-top: 10px;
+    text-align: center;
+}
+.camera-box video {
+    width: 300px;
+    height: 225px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+.camera-box button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -94,6 +121,14 @@
     <div class="profile-card">
         <h1>My Profile</h1>
         <div class="info">
+            <img src="{{ url_for('static', filename=user.profile_picture if user.profile_picture else'default_avatar.png') }}" alt="PFP" class="dp" id="profilePicture" onclick="openCamera()"><br>
+        <div class="camera-box" id="cameraBox">
+            <video id="camera" autoplay></video><br>
+            <button type="button" onclick="takePhoto()">Take Photo</button>
+            <button type="button" onclick="closeCamera()">Cancel</button>
+            <canvas id="photoCanvas" style="display:none;"></canvas>
+        </div>
+        <div class="info">
             <b>Name:</b> {{ user.username }}
         </div>
         <div class="info">
@@ -101,12 +136,66 @@
         </div>
     </div>
     <script>
-        function openNav() {
-            document.getElementById("mySidepanel").style.width = "250px";
+    let cameraStream;
+function openNav() {
+    document.getElementById("mySidepanel").style.width = "250px";
+}
+function closeNav() {
+    document.getElementById("mySidepanel").style.width = "0";
+}
+async function openCamera() {
+    const cameraBox = document.getElementById("cameraBox");
+    const camera = document.getElementById("camera");
+    cameraBox.style.display = "block";
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: true
+        });
+        camera.srcObject = cameraStream;
+    } catch (error) {
+        alert("Could not access the camera. Please allow camera permission.");
+        console.error(error);
+    }
+}
+async function takePhoto() {
+    const camera = document.getElementById("camera");
+    const canvas = document.getElementById("photoCanvas");
+    const profilePicture = document.getElementById("profilePicture");
+    canvas.width = camera.videoWidth;
+    canvas.height = camera.videoHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(
+        camera,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+    profilePicture.src = canvas.toDataURL("image/png");
+    canvas.toBlob(async function(blob) {
+        const formData = new FormData();
+        formData.append("profile_picture", blob, "profile.png");
+        const response = await fetch("/upload-profile-picture", {
+            method: "POST",
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            console.log("Profile picture saved!");
+        } else {
+            alert("Could not save profile picture.");
         }
-        function closeNav() {
-            document.getElementById("mySidepanel").style.width = "0";
-        }
+    }, "image/png");
+    closeCamera();
+}
+function closeCamera() {
+    const cameraBox = document.getElementById("cameraBox");
+    cameraBox.style.display = "none";
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+}    
     </script>
 </body>
 </html>
