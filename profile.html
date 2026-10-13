@@ -1,201 +1,502 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Profile</title>
+    <title>{{ user.username }} - Profile</title>
     <style>
         body {
             margin: 0;
             min-height: 100vh;
-            background: url("/static/RegH.png") center / cover no-repeat;
+            background: url("/static/RegH.png")
+                        center / cover no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
         }
         .profile-card {
-            width: 400px;
+            width: 420px;
             padding: 30px;
             border-radius: 20px;
-            background-color: rgba(0, 0, 0, 0.65);
+            background-color: rgba(0, 0, 0, 0.70);
             color: white;
             text-align: center;
+            box-sizing: border-box;
         }
         .profile-card h1 {
-            margin-bottom: 30px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            font-size: 30px;
+        }
+        .profile-picture {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+        .clickable-picture {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .clickable-picture:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        .camera-text {
+            color: #cccccc;
+            font-size: 14px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+        .camera-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        #camera {
+            width: 300px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 2px solid white;
+            background-color: black;
+        }
+        .camera-buttons {
+            margin-top: 15px;
+        }
+        .camera-button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: #004085;
+        }
+        .camera-button:hover {
+            background-color: #002752;
+        }
+        .cancel-button {
+            background-color: #555;
+        }
+        .cancel-button:hover {
+            background-color: #333;
         }
         .info {
             text-align: left;
             font-size: 18px;
             margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        .follow-button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            background-color: #004085;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .follow-button:hover {
+            background-color: #002752;
+            transform: scale(1.05);
         }
         .sidepanel {
-  height: 100%;
-  width: 0; 
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;  
-  transition: 0.3s ease; 
-  padding-top: 60px;
-}
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.3s ease;
+            padding-top: 60px;
+        }
+        .sidepanel a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: white;
+            font-family:
+                'Franklin Gothic Medium',
+                'Arial Narrow',
+                Arial,
+                sans-serif;
 
-.sidepanel a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: white;
-  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  display: block;
-  transition: 0.3s;
-}
+            display: block;
 
-.sidepanel a:hover {
-  color: #f1f1f1;
-}
-.closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-.openbtn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background-color: transparent;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 25px;
-    height: 50px;
-    width: 50px;
-    border: none;
-    z-index: 999;
-}
-.dp{
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto 20px auto;
-    cursor: pointer;
-}
-.camera-box {
-    display: none;
-    margin-top: 10px;
-    text-align: center;
-}
-.camera-box video {
-    width: 300px;
-    height: 225px;
-    object-fit: cover;
-    border-radius: 15px;
-}
-.camera-box button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
+            transition: 0.3s;
+        }
+        .sidepanel a:hover {
+
+            color: #f1f1f1;
+        }
+        .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .openbtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: transparent;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 25px;
+            height: 50px;
+            width: 50px;
+            border: none;
+            z-index: 999;
+        }
+        .submit-button{
+            margin-top: 20px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            background-color: #af9506;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align:center;
+        }
+        .submit-button:hover {
+            background-color: #a3850f;
+        }
+        .follow-button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            background-color: #a99912;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .follow-button:hover {
+            background-color: #d0ac1b;
+        }
+        #canvas {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <button class="openbtn" onclick="openNav()">&#9776;</button>
-    <div id="mySidepanel" class="sidepanel">
-        <button class="closebtn" onclick="closeNav()">&times;</button>
-        <a href="/">Home</a>
-        <a href="/timetable">Time Table</a>
-        <a href="#">Friends</a>
-        <a href="/profile">Profile</a>
-        <a href="/register">Register</a>
-        <a href="#">Contact</a>
+    <button
+        class="openbtn"
+        onclick="openNav()">
+        &#9776;
+    </button>
+    <div
+        id="mySidepanel"
+        class="sidepanel">
+        <button
+            class="closebtn"
+            onclick="closeNav()">
+            &times;
+        </button>
+        <a href="/">
+            Home
+        </a>
+        <a href="/search">
+            Search
+        </a>
+        <a href="/timetable">
+            Time Table
+        </a>
+        <a href="/friends">
+            Friends
+        </a>
+        <a href="/profile">
+            Profile
+        </a>
+        <a href="/register">
+            Register
+        </a>
+        <a href="#">
+            Contact
+        </a>
     </div>
     <div class="profile-card">
-        <h1>My Profile</h1>
-        <div class="info">
-            <img src="{{ url_for('static', filename=user.profile_picture if user.profile_picture else'default_avatar.png') }}" alt="PFP" class="dp" id="profilePicture" onclick="openCamera()"><br>
-        <div class="camera-box" id="cameraBox">
-            <video id="camera" autoplay></video><br>
-            <button type="button" onclick="takePhoto()">Take Photo</button>
-            <button type="button" onclick="closeCamera()">Cancel</button>
-            <canvas id="photoCanvas" style="display:none;"></canvas>
+    {% if is_owner %}
+        <img
+            src="{{ url_for(
+                'static',
+                filename=user.profile_picture
+                if user.profile_picture
+                else 'default_avatar.png'
+            ) }}"
+            class="profile-picture clickable-picture"
+            alt="Profile Picture"
+            onclick="openCamera()"
+            id="profilePicture"
+        >
+        <p class="camera-text">
+            Click your profile picture to change it
+        </p>
+        <div id="cameraContainer" class="camera-container">
+            <video
+                id="camera"
+                autoplay
+                playsinline>
+            </video>
+            <div class="camera-buttons">
+                <button
+                    type="button"
+                    class="camera-button"
+                    onclick="takePhoto()">
+                    Take Photo
+                </button>
+                <button
+                    type="button"
+                    class="camera-button cancel-button"
+                    onclick="closeCamera()">
+                    Cancel
+                </button>
+            </div>
         </div>
+        <canvas id="canvas"></canvas>
+        <h1>{{ user.username }}</h1>
         <div class="info">
-            <b>Name:</b> {{ user.username }}
+            <b>Registration No:</b>
+            {{ user.regno }}
         </div>
+        <form action="/choice" method="POST">
+
+            <p>Classes order:</p>
+
+            <label>
+                <input
+                    type="radio"
+                    name="choice"
+                    value="Morning Theory"
+                    {% if user.get('choice') == 'Morning Theory' %}
+                        checked
+                    {% endif %}
+                >
+                Morning Theory
+            </label>
+            <label>
+                <input
+                    type="radio"
+                    name="choice"
+                    value="Morning Lab"
+                    {% if user.get('choice') == 'Morning Lab' %}
+                        checked
+                    {% endif %}
+                >
+                Morning Lab
+            </label>
+            <br>
+            <button
+                type="submit"
+                class="submit-button">
+                Submit
+            </button>
+        </form>
+        <!-- SHOW CURRENT CHOICE -->
+        {% if user.get('choice') %}
+            <p>
+                <b>Selected Choice:</b>
+                {{ user.choice }}
+            </p>
+        {% endif %}
+    {% else %}
+        <img
+            src="{{ url_for(
+                'static',
+                filename=user.profile_picture
+                if user.profile_picture
+                else 'default_avatar.png'
+            ) }}"
+            class="profile-picture"
+            alt="Profile Picture"
+        >
+        <h1>{{ user.username }}</h1>
         <div class="info">
-            <b>Registration No:</b> {{ user.regno }}
+            <b>Registration No:</b>
+            {{ user.regno }}
         </div>
-    </div>
+        <button
+            type="button"
+            class="follow-button"
+            onclick="location.href='/follow/{{ profile_regno }}'">
+            Follow
+        </button>
+
+    {% endif %}
+
+</div>
+</div>
     <script>
-    let cameraStream;
-function openNav() {
-    document.getElementById("mySidepanel").style.width = "250px";
-}
-function closeNav() {
-    document.getElementById("mySidepanel").style.width = "0";
-}
-async function openCamera() {
-    const cameraBox = document.getElementById("cameraBox");
-    const camera = document.getElementById("camera");
-    cameraBox.style.display = "block";
-    try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: true
-        });
-        camera.srcObject = cameraStream;
-    } catch (error) {
-        alert("Could not access the camera. Please allow camera permission.");
-        console.error(error);
-    }
-}
-async function takePhoto() {
-    const camera = document.getElementById("camera");
-    const canvas = document.getElementById("photoCanvas");
-    const profilePicture = document.getElementById("profilePicture");
-    canvas.width = camera.videoWidth;
-    canvas.height = camera.videoHeight;
-    const context = canvas.getContext("2d");
-    context.drawImage(
-        camera,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-    profilePicture.src = canvas.toDataURL("image/png");
-    canvas.toBlob(async function(blob) {
-        const formData = new FormData();
-        formData.append("profile_picture", blob, "profile.png");
-        const response = await fetch("/upload-profile-picture", {
-            method: "POST",
-            body: formData
-        });
-        const result = await response.json();
-        if (result.success) {
-            console.log("Profile picture saved!");
-        } else {
-            alert("Could not save profile picture.");
+        function openNav() {
+            document
+                .getElementById("mySidepanel")
+                .style.width = "250px";
         }
-    }, "image/png");
-    closeCamera();
-}
-function closeCamera() {
-    const cameraBox = document.getElementById("cameraBox");
-    cameraBox.style.display = "none";
-    if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-    }
-}    
+        function closeNav() {
+            document
+                .getElementById("mySidepanel")
+                .style.width = "0";
+        }
+        let cameraStream = null;
+        async function openCamera() {
+            const cameraContainer =
+                document.getElementById(
+                    "cameraContainer"
+                );
+            cameraContainer.style.display =
+                "block";
+            try {
+                cameraStream =
+                    await navigator.mediaDevices
+                    .getUserMedia({
+                        video: {
+                            facingMode: "user"
+                        },
+                        audio: false
+                    });
+                const video =
+                    document.getElementById(
+                        "camera"
+                    );
+                video.srcObject =
+                    cameraStream;
+            }
+            catch (error) {
+                console.error(error);
+                alert(
+                    "Could not access the camera. Please allow camera permission in your browser."
+                );
+                cameraContainer.style.display =
+                    "none";
+            }
+        }
+        function takePhoto() {
+            const video =
+                document.getElementById(
+                    "camera"
+                );
+            const canvas =
+                document.getElementById(
+                    "canvas"
+                );
+            canvas.width =
+                video.videoWidth;
+            canvas.height =
+                video.videoHeight;
+            const context =
+                canvas.getContext("2d");
+            context.translate(
+                canvas.width,
+                0
+            );
+            context.scale(
+                -1,
+                1
+            );
+            context.drawImage(
+                video,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+            canvas.toBlob(
+                function(blob) {
+                    uploadPhoto(blob);
+                },
+                "image/png"
+            );
+        }
+        function uploadPhoto(blob) {
+            const formData =
+                new FormData();
+            formData.append(
+                "profile_picture",
+                blob,
+                "profile.png"
+            );
+            fetch(
+                "/upload-profile-picture",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            )
+            .then(
+                response =>
+                    response.json()
+            )
+            .then(
+                data => {
+                    if (data.success) {
+                        stopCamera();
+                        location.reload();
+                    }
+                    else {
+                        alert(
+                            data.error ||
+                            "Upload failed."
+                        );
+                    }
+                }
+            )
+            .catch(
+                error => {
+
+                    console.error(error);
+
+                    alert(
+                        "Something went wrong while uploading the picture."
+                    );
+
+                }
+            );
+        }
+        function closeCamera() {
+            stopCamera();
+            document
+                .getElementById(
+                    "cameraContainer"
+                )
+                .style.display = "none";
+        }
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream
+                    .getTracks()
+                    .forEach(
+                        track => track.stop()
+                    );
+                cameraStream = null;
+            }
+        }
+        window.addEventListener(
+            "beforeunload",
+            function() {
+                stopCamera();
+            }
+        );
     </script>
 </body>
 </html>
